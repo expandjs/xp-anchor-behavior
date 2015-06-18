@@ -111,8 +111,10 @@ This behavior is used to add anchor capabilities on the context element.
              *
              * @attribute target
              * @type string
+             * @notifies
              */
             target: {
+                notify: true,
                 value: null
             }
         }

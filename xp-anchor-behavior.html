@@ -26,13 +26,13 @@ This behavior is used to add anchor capabilities on the context element.
     Polymer.XPAnchorBehavior = {
 
         /**
-         * Refreshes the element.
+         * Refreshes the anchor.
          *
-         * @method refresh
+         * @method _updateAnchor
          * @returns {Element}
          * @private
          */
-        _refresh: function () {
+        _updateAnchor: function () {
 
             // Vars
             var self = this;
@@ -50,7 +50,7 @@ This behavior is used to add anchor capabilities on the context element.
 
         // OBSERVERS
         observers: [
-            '_refresh(download, href, rel, target)'
+            '_updateAnchor(download, href, rel, target)'
         ],
 
         // PROPERTIES

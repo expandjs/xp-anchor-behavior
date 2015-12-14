@@ -7,17 +7,18 @@ The complete set of contributors may be found at https://expandjs.github.io/CONT
 -->
 
 <!--
-This behavior is used to add anchor capabilities on the context element.
+A behavior used to add anchor capabilities on a custom element.
 
 @behavior xp-anchor-behavior
-@description A behavior used to add anchor capabilities on the context element
-@keywords web app, html5, expandjs, web-components
+@description A behavior used to add anchor capabilities on a custom element
+@keywords expandjs, web app, custom elements, web-components
 @group behaviors
+
 @homepage http://expandjs.com/elements/xp-anchor-behavior
 @repository https://github.com/ExpandJS/xp-anchor-behavior
 
-@dependency polymer Polymer/polymer#^1.1.0
-@dependency expandjs ExpandJS/expandjs#0.9.11
+@dependency polymer Polymer/polymer#^1.2.0
+@dependency expandjs ExpandJS/expandjs#0.10.0
 -->
 
 <link rel="import" href="../polymer/polymer.html">
@@ -27,31 +28,20 @@ This behavior is used to add anchor capabilities on the context element.
     Polymer.XPAnchorBehavior = {
 
         /**
-         * Refreshes the anchor.
+         * Fired when the anchor is clicked.
          *
-         * @method _updateAnchor
-         * @returns {Element}
-         * @private
+         * @event xp-redirect
+         * @param {Element} firer
+         * @param {string} href
+         * @bubbles
+         * @cancelable
          */
-        _updateAnchor: function () {
-
-            // Vars
-            var self = this;
-
-            // Setting
-            XP.setAttribute(self.anchor, 'download', (self.href && self.download) || null);
-            XP.setAttribute(self.anchor, 'href', self.href || null);
-            XP.setAttribute(self.anchor, 'rel', (self.href && self.rel) || null);
-            XP.setAttribute(self.anchor, 'target', (self.href && self.target) || null);
-
-            return self;
-        },
 
         /*********************************************************************/
 
         // OBSERVERS
         observers: [
-            '_updateAnchor(anchor, download, href, rel, target)'
+            '_anchorObserver(anchor, download, href, rel, target)'
         ],
 
         // PROPERTIES
@@ -67,8 +57,7 @@ This behavior is used to add anchor capabilities on the context element.
              */
             anchor: {
                 notify: true,
-                readOnly: true,
-                value: null
+                readOnly: true
             },
 
             /**
@@ -111,13 +100,52 @@ This behavior is used to add anchor capabilities on the context element.
              * The anchor's target property's value.
              *
              * @attribute target
-             * @type string
+             * @type Element | string
              * @notifies
              */
             target: {
                 notify: true,
                 value: null
             }
+        },
+
+        /*********************************************************************/
+
+        // OBSERVER
+        _anchorObserver: function () {
+
+            // Vars
+            var self = this;
+
+            // Setting
+            XP.setAttribute(self.anchor, 'download', self.href && self.download);
+            XP.setAttribute(self.anchor, 'href', self.href);
+            XP.setAttribute(self.anchor, 'rel', self.href && self.rel);
+            XP.setAttribute(self.anchor, 'target', self.href && self.target);
+        },
+
+        /*********************************************************************/
+
+        // LISTENER
+        ready: function () {
+
+            // Setting
+            this._setAnchor(this.anchor || Polymer.dom(this.root).querySelector('.anchor'));
+        },
+
+        /*********************************************************************/
+
+        // HANDLER
+        _anchorHandler: function (event) {
+
+            // Vars
+            var self = this;
+
+            // Checking
+            if (event.button || self.anchor !== event.currentTarget || !self.anchor.href) { return; }
+
+            // Firing
+            if (self.fire('xp-redirect', {firer: self, anchor: self.anchor, href: self.anchor.href}, {cancelable: true}).defaultPrevented) { event.preventDefault(); }
         }
     };
 </script>

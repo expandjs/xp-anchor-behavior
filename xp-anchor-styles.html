@@ -29,6 +29,7 @@ A stylesheet used to stylize an anchor element.
         <style>
             :host .anchor {
                 border-radius: inherit;
+                box-sizing: border-box;
                 color: inherit;
                 display: block;
                 height: 100%;
@@ -42,6 +43,7 @@ A stylesheet used to stylize an anchor element.
             }
 
             :host .anchor:after {
+                box-sizing: border-box;
                 content: "";
                 height: 100%;
                 left: 50%;
